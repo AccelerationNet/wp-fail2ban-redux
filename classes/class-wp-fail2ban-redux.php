@@ -120,7 +120,7 @@ if ( ! class_exists( 'WP_Fail2Ban_Redux' ) ) {
 
     public function is_invalid_request(){
       $url = $_SERVER['REQUEST_URI'];
-      error_log("Checking request to $url for bad vibes ");
+      // error_log("Checking request to $url");
       if (preg_match('/\/wp-content\/uploads\/.*\.php/i', $url)
           || preg_match('/wp-fail2ban-notification=true&invalid-request=true/i', $url)
           || preg_match('/^\/wp-config/i', $url)
@@ -146,12 +146,28 @@ if ( ! class_exists( 'WP_Fail2Ban_Redux' ) ) {
       };
     }
 
+
+
+
+    public function do_robots_txt($output, $public){
+      // any folks intentionally ignoring the robots.txt file will be banned
+      return $output."Disallow: /fail/?wp-fail2ban-notification=true&invalid-request=true\n";
+    }
+
+    public function add_honey_pot(){
+      // Kill nonconforming bots
+      echo "\n<a rel=\"nofollow\" href=\"/fail/?wp-fail2ban-notification=true&invalid-request=true\" style=\"font-size:0;height:0;line-height:0; color:transparent;\" >Following This Link Will Ban Your IP</a>\n";
+    }
+
     /**
      * Set admin-related actions and filters.
      *
      * @since 0.1.1
      */
     public function setup_actions() {
+      add_filter('robots_txt', array($this, 'do_robots_txt'), 10,  2);
+      add_action( 'get_footer', array($this, 'add_honey_pot'), 100 );
+
       add_action('check_request', array($this, 'do_login_rate_limiting'));
       add_action('check_request', array($this, 'check_for_invalid_requests'));
       do_action('check_request');
