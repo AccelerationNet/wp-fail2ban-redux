@@ -128,7 +128,7 @@ if ( ! class_exists( 'WP_Fail2Ban_Redux_Logger' ) ) {
 				if ( empty( $ip ) ) {
 					$ip = $this->get_remote_ip();
 				}
-
+                                error_log("{$message} from {$ip}");
 				return syslog( $priority, "{$message} from {$ip}" );
 			}
 

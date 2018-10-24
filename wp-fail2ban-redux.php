@@ -33,10 +33,24 @@
 defined( 'ABSPATH' ) || exit;
 
 // Include the WP Fail2Ban Redux classes.
+require_once 'classes/class-wp-fail2ban-redux-user-frequency.php';
 require_once 'classes/class-wp-fail2ban-redux.php';
 require_once 'classes/class-wp-fail2ban-redux-logger-interface.php';
 require_once 'classes/class-wp-fail2ban-redux-logger.php';
 require_once 'classes/class-wp-fail2ban-redux-log.php';
+
+/**
+ * Return the real client address if the REMOTE_ADDR we see here is known to be our proxy.
+ */
+function get_remote_ip() {
+  if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
+      && ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+    $them = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    return $them[0];
+  }else{
+    return $_SERVER['REMOTE_ADDR'];
+  }
+}
 
 /**
  * Initialize WP Fail2Ban Redux.
@@ -44,16 +58,16 @@ require_once 'classes/class-wp-fail2ban-redux-log.php';
  * @since 0.3.0
  */
 function wp_fail2ban_redux_init() {
+  $_SERVER['REMOTE_ADDR'] = get_remote_ip();
+  // Initialize the plugin.
+  $wpf2br = WP_Fail2Ban_Redux::get_instance();
+  $wpf2br->setup_actions();
 
-	// Initialize the plugin.
-	$wpf2br = WP_Fail2Ban_Redux::get_instance();
-	$wpf2br->setup_actions();
-
-	/**
-	 * Fires after WP Fail2Ban Redux has been loaded and initialized.
-	 *
-	 * @since 0.3.0
-	 */
-	do_action( 'wp_fail2ban_redux_loaded' );
+  /**
+   * Fires after WP Fail2Ban Redux has been loaded and initialized.
+   *
+   * @since 0.3.0
+   */
+  do_action( 'wp_fail2ban_redux_loaded' );
 }
 add_action( 'plugins_loaded', 'wp_fail2ban_redux_init' );
