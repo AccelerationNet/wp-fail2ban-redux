@@ -53,7 +53,7 @@ if ( ! class_exists( 'WP_Fail2Ban_Redux' ) ) {
       $tss[] = time();
       $this->freqs[$user] = $tss;
       $this->save();
-      error_log('User '.$user. ' over? '.count($tss) .' > '.$this->ratelimit);
+      // error_log('User '.$user. ' over? '.count($tss) .' > '.$this->ratelimit);
       return count($tss) > $this->ratelimit;
     }
 
