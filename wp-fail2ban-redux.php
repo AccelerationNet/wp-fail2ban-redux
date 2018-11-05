@@ -33,18 +33,13 @@
 defined( 'ABSPATH' ) || exit;
 
 // Include the WP Fail2Ban Redux classes.
-<<<<<<< HEAD
-require_once 'classes/class-wp-fail2ban-redux-user-frequency.php';
-require_once 'classes/class-wp-fail2ban-redux.php';
-require_once 'classes/class-wp-fail2ban-redux-logger-interface.php';
-require_once 'classes/class-wp-fail2ban-redux-logger.php';
-require_once 'classes/class-wp-fail2ban-redux-log.php';
-=======
+
+require_once 'wp-fail2ban-redux/classes/class-wp-fail2ban-redux-user-frequency.php';
 require_once 'wp-fail2ban-redux/classes/class-wp-fail2ban-redux.php';
 require_once 'wp-fail2ban-redux/classes/class-wp-fail2ban-redux-logger-interface.php';
 require_once 'wp-fail2ban-redux/classes/class-wp-fail2ban-redux-logger.php';
 require_once 'wp-fail2ban-redux/classes/class-wp-fail2ban-redux-log.php';
->>>>>>> upstream/master
+
 
 /**
  * Return the real client address if the REMOTE_ADDR we see here is known to be our proxy.
